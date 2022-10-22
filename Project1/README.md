@@ -4,25 +4,34 @@
 ###### tags: Network Programming、pipe、dup2
 
 ## Pipe 架構規劃
+
 ### **Normal Pipe**
-![](https://i.imgur.com/iI4GsVF.png)
+
+![](https://i.imgur.com/iI4GsVF.png width = "150" height = "80")
 
 ---
 
 ### **Number Pipe**
+
 * Step1
-![](https://i.imgur.com/qWKTgfD.png)
+
+![](https://i.imgur.com/qWKTgfD.png width = "150" height = "80")
+
 * Step2
-![](https://i.imgur.com/yKyuD5B.png)
+
+![](https://i.imgur.com/yKyuD5B.png width = "150" height = "80")
 
 ---
 
 
 ### 將輸入字串依照Number Pipe分割
+
 以下兩種輸出結果相同
+
 > $ removetag test.html |2 removetag test.html |1 
 > $ number |1 number
- 
+
+
 > $ removetag test.html |2
 > $ removetag test.html |1
 > $ number |1
@@ -30,7 +39,8 @@
 
 
 
-```c++=1
+```c++
+
 vector<string> split_cmdline_by_numpipe(string cmdline){
     bool isnumpipe;
     vector<string> tempcommands;
@@ -56,9 +66,11 @@ vector<string> split_cmdline_by_numpipe(string cmdline){
 
     return tempcommands;
 }
+
 ```
 
 ---
+
 ### 使用2-D儲存command、argment
 
 > 表格如下列情況
@@ -70,7 +82,8 @@ vector<string> split_cmdline_by_numpipe(string cmdline){
 > | removetag|test.html | 
 
 
-```c++=1
+```c++
+
 // 儲存command&argment
 vector<vector<string>> commands;     //2D-array儲存command
 vector<string> argments;             //1D-array儲存argment
