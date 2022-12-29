@@ -63,7 +63,7 @@ void Console::SetQuery(std::string query_string)
 void Console::Link2Server()
 {
 	for (int i = 0; i < (int)clients.size(); ++i)
-	{
+	{	// 要製作一個sock4格式的request
 		std::string sock_request = "";
 
 		sock_request += (char)4;
@@ -299,7 +299,7 @@ void Console::GetShellOutput(int session, std::vector<std::string> input)
 
 			SendShellOutput(session, temp);
 
-			if (temp.find("%") == std::string::npos) 
+			if (temp.find("%") == std::string::npos) // % np_single_golden回傳的結果
 			{
 				GetShellOutput(session, input);
 			}

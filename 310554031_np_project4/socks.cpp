@@ -51,8 +51,8 @@ void Session::ParseSOCK4Request(int length)
 	unsigned char DOMAIN_NAME_TEMP[1024];
 
 	D_PORT = std::to_string((int)(data_[2] < 0 ? (data_[2] + 256) * 256 : data_[2] * 256) + (int)(data_[3] < 0 ? data_[3] + 256 : data_[3]));
-	// D_IP
-	D_IP = "";  
+
+	D_IP = "";
 	for (int i = 4; i < 8; ++i)
 	{
 		if (i != 4) D_IP += ".";
@@ -60,7 +60,7 @@ void Session::ParseSOCK4Request(int length)
 		int temp = (data_[i] < 0 ? (int)data_[i] + 256 : data_[i]);
 		D_IP += std::to_string(temp);
 	}
-	// Domain name
+
 	bool flag = false;
 	int count = 0;
 	for (int i = 8; i < (int)length; ++i)
@@ -161,14 +161,14 @@ void Session::DoReply()
 
 		DoReplyReject();	
 	}
-	else if (data_[1] == 0x01)
+	else if (data_[1] == 0x01)  //connect
 	{
 		command = "CONNECT";
 		reply = "Accept";
 		
 		DoReplyConnect();
 	}	
-	else if (data_[1] == 0x02)
+	else if (data_[1] == 0x02)  // bind
 	{
 		command = "BIND";
 		reply = "Accept";
@@ -216,7 +216,7 @@ void Session::DoReplyConnect()
 			tcp::endpoint endpoint;
 
 			if (D_IP[0] == '0')
-			{   //解析0.0.0.x的狀況
+			{
 				tcp::resolver resolver(*Session::io_context_);
 				tcp::resolver::query query(DOMAIN_NAME, D_PORT);
 				tcp::resolver::iterator iter = resolver.resolve(query);
@@ -227,7 +227,7 @@ void Session::DoReplyConnect()
 				endpoint = tcp::endpoint(boost::asio::ip::address::from_string(D_IP), atoi((D_PORT).c_str()));
 			}
 
-			(*web_socket).connect(endpoint);
+			(*web_socket).connect(endpoint); // web_socket網頁建立連結
 
 			DoReadFromWeb();		
 			DoReadFromServer();
@@ -245,7 +245,7 @@ void Session::DoReplyBind()
 
 	tcp::endpoint endpoint(boost::asio::ip::address::from_string("0.0.0.0"), 0);
 
-	acceptor_ = new tcp::acceptor(*Session::io_context_); // 第一次連線會拿到port
+	acceptor_ = new tcp::acceptor(*Session::io_context_);
 
 	(*acceptor_).open(tcp::v4());
 	(*acceptor_).set_option(tcp::acceptor::reuse_address(true));
@@ -366,6 +366,8 @@ bool Session::CheckFirewall(char command)
 	return false;
 }
 
+
+// 0.
 Server::Server(boost::asio::io_context& io_context, short port)
 		: acceptor_(io_context, tcp::endpoint(tcp::v4(), port))
 {
